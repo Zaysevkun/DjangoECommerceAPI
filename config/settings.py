@@ -10,17 +10,11 @@ dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
-
 SECRET_KEY = os.getenv('SECRET_KEY', 'Optional default value')
-
 
 DEBUG = os.getenv('DEBUG', 'Optional default value')
 
-
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'Optional default value').split(" ")
-
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,14 +57,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
-
-
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config()
-
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -87,9 +75,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -99,8 +84,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
 
 STATIC_URL = '/static/'
 

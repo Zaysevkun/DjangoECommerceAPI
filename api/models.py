@@ -36,8 +36,14 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    class RoleChoices(models.TextChoices):
+        CLIENT = 'client', 'Клиент'
+        MANAGER = 'manager', 'Менеджер'
+
     username = None
     full_name = models.CharField('ФИО', max_length=100)
+    role = models.CharField('Роль пользователя', max_length=10, choices=RoleChoices.choices,
+                            default=RoleChoices.CLIENT)
     mailing_address = models.CharField('Адрес доставки', max_length=100)
     email = models.EmailField('Email', unique=True)
 
@@ -50,14 +56,8 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
-
-class Role(models.Model):
-    class RoleChoices(models.TextChoices):
-        CLIENT = 'client', 'Клиент'
-        MANAGER = 'manager', 'Менеджер'
-
-    role = models.CharField('Роль пользователя', max_length=32, choices=RoleChoices.choices,
-                            default=RoleChoices.CLIENT)
+    def __str__(self):
+        return self.full_name
 
 
 class Product(models.Model):
@@ -70,9 +70,25 @@ class Product(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
+    def __str__(self):
+        return self.name
+
 
 class Order(models.Model):
     user = models.OneToOneField(User, models.CASCADE,
                                 related_name='order')
-    products = models.ManyToManyField(Product, 'Товары в корзине')
+    products = models.ManyToManyField(Product, verbose_name='Товары в корзине', through='ProductsInOrder')
 
+    class Meta:
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
+
+    def __str__(self):
+        return self.pk
+
+
+# intermediary table
+class ProductsInOrder(models.Model):
+    product = models.ForeignKey(Product, models.CASCADE, 'товар')
+    order = models.ForeignKey(Order, models.CASCADE, 'корзина')
+    quantity = models.PositiveSmallIntegerField('количество товара')
