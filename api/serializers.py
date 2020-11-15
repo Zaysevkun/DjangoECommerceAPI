@@ -15,6 +15,15 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    products = serializers.PrimaryKeyRelatedField(many=True, queryset=Product.objects.all())
+
     class Meta:
         model = Order
         fields = ('user', 'products')
+
+    def partial_update(self, validated_data):
+        request = self.context.get('request', None)
+        current_user = request.user
+        obj, created = Order.objects.get_or_create(user=current_user)
+        obj.products.add(validated_data.get('product'))
+        return obj

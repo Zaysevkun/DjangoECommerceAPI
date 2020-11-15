@@ -2,24 +2,18 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from .serializers import UserSerializer, OrderSerializer, ProductSerializer
 from .models import User, Product, Order
+from .permissions import OrderPermissions
 
 
-# (auth)
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-# get all?
+# ViewSet for interacting with Products
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-# patch(permission my order or moderator)
+# ViewSet for interacting with Orders
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (OrderPermissions, permissions.IsAuthenticated)
+

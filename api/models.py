@@ -3,8 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+# Define a model manager for User model with no username set
 class UserManager(BaseUserManager):
-    """Define a model manager for User model with no username field."""
 
     use_in_migrations = True
 
@@ -25,6 +25,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'manager')
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
@@ -34,6 +35,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+# Custom User Class
 class User(AbstractUser):
     class RoleChoices(models.TextChoices):
         CLIENT = 'client', 'Клиент'
@@ -83,10 +85,10 @@ class Order(models.Model):
         verbose_name_plural = 'Корзины'
 
     def __str__(self):
-        return self.pk
+        return 'Корзина' + self.user.email
 
 
-# intermediary table
+# intermediary model for adding quantity to each item in order
 class ProductsInOrder(models.Model):
     product = models.ForeignKey(Product, models.CASCADE, 'товар')
     order = models.ForeignKey(Order, models.CASCADE, 'корзина')
