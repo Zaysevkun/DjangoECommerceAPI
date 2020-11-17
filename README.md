@@ -2,6 +2,8 @@
 
 API of a simple online shop
 
+You can check out live project on [Heroku](https://djangoecomapi.herokuapp.com)
+
 ## Requirements
 You need installed:
 1. Redis
@@ -33,7 +35,7 @@ DEBUG=0
 
 POST request body:
 ```
-{"Token"}
+{"token"}
 ```
 | *URL* | *Method*|*Description*|
 |-------|---------|-------------|
