@@ -1,7 +1,9 @@
-from rest_framework import viewsets, permissions, mixins, status
+from rest_framework import viewsets, permissions, mixins, views
 from rest_framework.authtoken.views import ObtainAuthToken
+import wkhtmltopdf
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
+
 from .serializers import OrderSerializer, ProductSerializer, CustomAuthTokenSerializer, ProductsInOrderSerializer
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.schemas import coreapi as coreapi_schema
@@ -64,3 +66,23 @@ class ProductsInOrderViewSet(mixins.CreateModelMixin,
     permission_classes = (OrderPermissions, permissions.IsAuthenticated)
 
 
+class FileUploadView(views.APIView):
+    parser_classes = [FileUploadParser]
+
+    def put(self, request, format=None):
+        file_obj = request.data['file']
+        products = file_obj.readlines()
+        for product in products[1:]:
+            product = product.decode('utf-8').strip('\n')
+            product_values = product.split(";")
+            Product.objects.create(vendor_code=product_values[0],
+                                   name=product_values[1],
+                                   retail_price=product_values[2])
+        return Response(status=204)
+
+
+# def pdf_checkout(request):
+#     pdf = wkhtmltox.Pdf()
+#     pdf.set_global_setting('out', 'two.pdf')
+#     pdf.add_page({'page': 'http://www.tweakers.net'})
+#     pdf.convert()

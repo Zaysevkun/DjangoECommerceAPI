@@ -65,7 +65,7 @@ class Product(models.Model):
     vendor_code = models.CharField('артикул', max_length=100, unique=True)
     name = models.CharField('наименование', max_length=64)
     retail_price = models.PositiveSmallIntegerField('Розничная цена')
-    purchase_price = models.PositiveSmallIntegerField('Цена закупки')
+    purchase_price = models.PositiveSmallIntegerField('Цена закупки', blank=True, default=0)
 
     class Meta:
         verbose_name = 'Товар'
