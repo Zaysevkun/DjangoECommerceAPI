@@ -10,7 +10,7 @@ You need installed:
 ## Project setup 
 
 1. `git clone https://github.com/Zaysevkun/DjangoECommerceAPI`
-2.  `create postgres db`
+2.  `create POSTGRESQL db`
 3. `cd DjangoECommerceAPI`
 4. `pip install -r requirements.txt`
 5. Add __.env__ file
