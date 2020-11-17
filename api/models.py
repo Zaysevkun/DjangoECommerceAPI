@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 
 # Define a model manager for User model with no username set
 class UserManager(BaseUserManager):
-
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
@@ -89,9 +88,13 @@ class Order(models.Model):
         return 'Корзина' + self.user.email
 
     def clean_price(self):
-        price = 0
+        self.price = 0
         for product in self.productsinorder_set.all():
-            price += product.sum
+            self.price += product.sum
+
+    def generate_html(self):
+        html = self.user.email + '<br/>' + str(self.pk) + '<br/>' + self.user.mailing_address
+        return html
 
 
 # intermediary model for adding quantity and sum to each item in order

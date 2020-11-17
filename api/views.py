@@ -1,15 +1,15 @@
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions, mixins, views
 from rest_framework.authtoken.views import ObtainAuthToken
-import wkhtmltopdf
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
-
 from .serializers import OrderSerializer, ProductSerializer, CustomAuthTokenSerializer, ProductsInOrderSerializer
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.schemas import ManualSchema
 from .models import Product, Order, ProductsInOrder
 from .permissions import OrderPermissions
+from .tasks import create_pdf
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -75,14 +75,19 @@ class FileUploadView(views.APIView):
         for product in products[1:]:
             product = product.decode('utf-8').strip('\n')
             product_values = product.split(";")
-            Product.objects.create(vendor_code=product_values[0],
-                                   name=product_values[1],
-                                   retail_price=product_values[2])
+            code = product_values[0]
+            name = product_values[1]
+            price = product_values[2]
+
+            purchase_price = 0.9 * price
+            if price < 1000:
+                retail_price = 1.2 * price
+            else:
+                retail_price = 1.1 * price
+
+            Product.objects.create(vendor_code=code,
+                                   name=name,
+                                   retail_price=retail_price,
+                                   purchase_price=purchase_price)
         return Response(status=204)
 
-
-# def pdf_checkout(request):
-#     pdf = wkhtmltox.Pdf()
-#     pdf.set_global_setting('out', 'two.pdf')
-#     pdf.add_page({'page': 'http://www.tweakers.net'})
-#     pdf.convert()
