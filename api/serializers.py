@@ -22,14 +22,17 @@ class ProductsInOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductsInOrder
-        fields = ('product', 'order', 'quantity')
+        fields = ('product', 'order', 'quantity', 'sum')
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True)
+    products_to_order = ProductsInOrderSerializer(many=True)
+    price = serializers.ReadOnlyField()
 
     class Meta:
         model = Order
-        fields = ('pk', 'user', 'products')
+        fields = ('pk', 'user', 'price', 'products', 'products_to_order')
 
 
 class CustomAuthTokenSerializer(AuthTokenSerializer):

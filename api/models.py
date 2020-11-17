@@ -78,7 +78,6 @@ class Order(models.Model):
     user = models.OneToOneField(User, models.CASCADE,
                                 related_name='order')
     products = models.ManyToManyField(Product, verbose_name='Товары в корзине', through='ProductsInOrder')
-    price = models.PositiveIntegerField('Сумма заказа', default=0)
 
     class Meta:
         verbose_name = 'Корзина'
@@ -87,10 +86,12 @@ class Order(models.Model):
     def __str__(self):
         return 'Корзина' + self.user.email
 
-    def clean_price(self):
-        self.price = 0
-        for product in self.productsinorder_set.all():
-            self.price += product.sum
+    @property
+    def price(self):
+        price = 0
+        for product in self.products_to_order.all():
+            price += product.sum
+        return price
 
     def generate_html(self):
         html = 'Клиент: ' + self.user.email +\
@@ -101,10 +102,10 @@ class Order(models.Model):
 
 # intermediary model for adding quantity and sum to each item in order
 class ProductsInOrder(models.Model):
-    product = models.ForeignKey(Product, models.CASCADE, 'товар')
-    order = models.ForeignKey(Order, models.CASCADE, 'корзина')
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name='товар')
+    order = models.ForeignKey(Order, models.CASCADE, verbose_name='корзина', related_name='products_to_order')
     quantity = models.PositiveSmallIntegerField('количество товара', default=1)
-    sum = models.PositiveIntegerField('Сумма по строке', default=0)
 
-    def clean_product_sum(self):
+    @property
+    def sum(self):
         return self.product.retail_price * self.quantity
