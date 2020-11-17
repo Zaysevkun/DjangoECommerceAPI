@@ -15,9 +15,9 @@ def create_pdf(request):
     order_html = order.generate_html()
     pdfkit.from_string(order_html, 'pdf/checkout.pdf')
     output_filename = os.path.join(STATIC_ROOT, 'pdf/checkout.pdf')
-    with open(output_filename, 'rb') as pdf_file:
-        response = HttpResponse(pdf_file.read())
-        response['Content-Type'] = 'mimetype/submimetype'
-        response['Content-Disposition'] = 'attachment; filename=regulation.pdf'
-    return response
+    # with open(output_filename, 'rb') as pdf_file:
+    #     response = HttpResponse(pdf_file.read())
+    #     response['Content-Type'] = 'mimetype/submimetype'
+    #     response['Content-Disposition'] = 'attachment; filename=regulation.pdf'
+    return HttpResponse(status=200)
 
