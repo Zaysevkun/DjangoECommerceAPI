@@ -93,7 +93,9 @@ class Order(models.Model):
             self.price += product.sum
 
     def generate_html(self):
-        html = self.user.email + '<br/>' + str(self.pk) + '<br/>' + self.user.mailing_address
+        html = 'Клиент: ' + self.user.email +\
+               '<br/>Номер заказа: ' + str(self.pk) +\
+               '<br/>Адрес доставки: ' + self.user.mailing_address
         return html
 
 
