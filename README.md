@@ -14,8 +14,10 @@ You need installed:
 1. `git clone https://github.com/Zaysevkun/DjangoECommerceAPI`
 2.  `create POSTGRESQL db`
 3. `cd DjangoECommerceAPI`
-4. `pip install -r requirements.txt`
-5. Add __.env__ file
+4. `python3 -m venv myvenv`
+5. `source myvenv/bin/activate`
+6. `pip install -r requirements.txt`
+7. Add __.env__ file
 ##### EXAMPLE:
 ```
 SECRET_KEY=qwerty123
